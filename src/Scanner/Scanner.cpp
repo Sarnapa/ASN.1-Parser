@@ -15,7 +15,6 @@ Scanner::~Scanner()
 ScannerToken Scanner::getNextToken()
 {
     skipWhiteSpaces();
-    //cout << currentPos << " " << input[currentPos] <<  " " << currentLine << endl;
     if(input[currentPos] == '\0')
         return ScannerToken(EOF_CHAR, "\0");
 

@@ -27,7 +27,7 @@ const map<ScannerTokenType, string> ScannerToken::tokenTypeNameMap =
     { ScannerTokenType::CHOICE_TAG, "CHOICE TAG"},
     { ScannerTokenType::ENUMERATED_TAG, "ENUMERATED TAG"},
     { ScannerTokenType::PRINTABLESTRING_TAG, "PRINTABLESTRING TAG"},
-    { ScannerTokenType::NUMERICSTRING_TAG, "NUMERICSTRING "},
+    { ScannerTokenType::NUMERICSTRING_TAG, "NUMERICSTRING"},
     { ScannerTokenType::IA5STRING_TAG, "IA5STRING TAG"},
     { ScannerTokenType::SEMILICON, "SEMILICON"},
     { ScannerTokenType::LEFT_CURLY_BRACKET, "LEFT CURLY BRACKET"},
