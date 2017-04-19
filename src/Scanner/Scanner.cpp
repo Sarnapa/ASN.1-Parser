@@ -167,8 +167,15 @@ ScannerToken Scanner::getAsciiStringToken()
 {
     unsigned int startPos = currentPos;
     currentPos++;
-    while((isgraph(input[currentPos]) && input[currentPos] != '\"') || input[currentPos] == ' ')
+    while((isgraph(input[currentPos]) && input[currentPos] != '\"') || input[currentPos] == ' '
+    || input[currentPos] == '\n')
+    {
+        if(input[currentPos] == '\n')
+            currentLine++;
         currentPos++;
+    }
+    if(input[currentPos] == '\0')
+        return getNextToken();
     string fromCode = getString(startPos);
     return ScannerToken(ASCII_STRING, fromCode);
 }
