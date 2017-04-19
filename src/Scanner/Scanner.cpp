@@ -89,7 +89,6 @@ ScannerToken Scanner::getSpecialCharToken()
             currentPos++;
             if(input[currentPos] != '.')
             {
-                currentPos++;
                 return ScannerToken(INVALID_TOKEN, "..");
             }
             currentPos++;
