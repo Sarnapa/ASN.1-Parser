@@ -1,0 +1,9 @@
+--TEST 4--
+
+FourthExample DEFINITIONS ::=
+
+BEGIN
+
+MyInt ::= INTEGER(0 .. 123)
+
+END

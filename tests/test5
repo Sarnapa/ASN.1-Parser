@@ -1,0 +1,9 @@
+--TEST 5--
+
+FifthExample DEFINITIONS ::=
+
+BEGIN
+
+ItemCode ::= NumericString(SIZE(1..15))
+
+END

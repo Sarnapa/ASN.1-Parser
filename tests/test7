@@ -1,0 +1,25 @@
+
+Protocol DEFINITIONS ::=
+BEGIN
+EXPORTS
+    PDU;
+IMPORTS
+  Order, Delivery-report, Item-code, Quantity, Order-number
+    FROM Module-order;
+
+
+PDU ::= CHOICE {
+  question
+    CHOICE {question1  Order,
+            question2  Item-code,
+            question3  Order-number,
+            },
+  answer
+    CHOICE {answer1  Delivery-report,
+            answer2  Quantity,
+            answer3  Delivery-report,
+            }
+}
+
+
+END

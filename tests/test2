@@ -1,0 +1,16 @@
+-- TEST2 --
+
+Test2 DEFINITIONS ::=
+BEGIN
+
+MyString ::= PrintableString("string 1")
+MyInt ::= INTEGER(0..123)
+   -- Comment 1 --MySeq ::= SEQUENCE --
+   comment2 - --
+{
+a MyInt,
+
+b MyInt         ,
+c       MyInt
+}
+END
