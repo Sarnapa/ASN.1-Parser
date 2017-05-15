@@ -55,7 +55,9 @@ enum ScannerTokenType
 class ScannerToken
 {
 public:
+	ScannerToken();
     ScannerToken(ScannerTokenType, string);
+	ScannerToken(const ScannerToken&);
     virtual ~ScannerToken();
 
     ScannerTokenType getType();

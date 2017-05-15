@@ -18,6 +18,7 @@ public:
 
     ScannerToken getNextToken();
     void scanCode();
+    unsigned int getCurrentLine();
 private:
     ScannerToken getSpecialCharToken();
     ScannerToken getIsUpperToken();

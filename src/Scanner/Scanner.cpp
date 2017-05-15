@@ -229,6 +229,11 @@ string Scanner::getString(unsigned int startPos)
     return NULL;
 }
 
+unsigned int Scanner::getCurrentLine()
+{
+    return currentLine;
+}
+
 void Scanner::scanCode()
 {
     while(input[currentPos] != '\0')

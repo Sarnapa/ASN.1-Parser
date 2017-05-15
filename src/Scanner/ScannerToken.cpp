@@ -73,8 +73,19 @@ const map<ScannerTokenType, string> ScannerToken::keywordMap =
     { ScannerTokenType::IA5STRING_TAG, "IA5String"},
 };
 
+ScannerToken::ScannerToken()
+{
+
+}
+
 ScannerToken::ScannerToken(ScannerTokenType type, string tokenContent):
 type(type), tokenContent(tokenContent)
+{
+
+}
+
+ScannerToken::ScannerToken(const ScannerToken &token):
+type(token.type), tokenContent(token.tokenContent)
 {
 
 }
