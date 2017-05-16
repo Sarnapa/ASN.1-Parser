@@ -30,7 +30,7 @@ IA5String
 ::=
 ..
 ""
-Identifier
+identifier
 Name
 "ASCII String"
 30

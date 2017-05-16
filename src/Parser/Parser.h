@@ -27,14 +27,18 @@ class Parser
         unsigned int parseExportsPart();
         unsigned int parseImportsPart();
 
-        unsigned int parseType();
-
         unsigned int parseVariable();
         unsigned int parseIntegerVariable();
         unsigned int parseBooleanVariable();
         unsigned int parseSequenceOfVariable();
         unsigned int parseOwnTypeVariable();
         unsigned int parseStringVariable();
+
+        unsigned int parseType();
+        unsigned int parseIntegerType();
+        unsigned int parseSequenceOrChoiceType();
+        unsigned int parseEnumaratedType();
+        unsigned int parseStringType();
 
         unsigned int parseString();
 

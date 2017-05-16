@@ -3,7 +3,7 @@
 Test2 DEFINITIONS ::=
 BEGIN
 
-MyString ::= PrintableString("string 1")
+MyString ::= PrintableString(SIZE (1..10))
 MyInt ::= INTEGER(0..123)
    -- Comment 1 --MySeq ::= SEQUENCE --
    comment2 - --
