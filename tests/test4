@@ -4,6 +4,6 @@ FourthExample DEFINITIONS ::=
 
 BEGIN
 
-MyInt ::= INTEGER(0 .. 123)
+MyInt := INTEGER(0 .. 123)
 
 END

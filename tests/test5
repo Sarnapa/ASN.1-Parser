@@ -4,6 +4,6 @@ FifthExample DEFINITIONS ::=
 
 BEGIN
 
-ItemCode = := ::= NumeriString(SIZE(1.15))
+ItemCode ::= NumericString(SIZE(1..15))
 
 END

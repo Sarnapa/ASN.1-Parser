@@ -16,7 +16,9 @@ enum LIMIT_TYPE
     STRING_FROM_LIMIT,
     STRING_SIZE_LIMIT,
     VALUES_LIST_ENUM,
-    VALUES_LIST_INTEGER
+    VALUES_LIST_INTEGER,
+    BOOLEAN_LIMIT,
+    SEQUENCE_OF_LIMIT
 };
 
 using namespace std;
@@ -31,17 +33,28 @@ class RangeObject
         virtual ~RangeObject();
         RangeObject& operator =(RangeObject&);
 
+        LIMIT_TYPE getLimitType();
+        string getTypeName();
+        string getIdentifierName();
+        vector<string> getParamVect();
+
         void printLimit();
+        void printMemberLimit();
+        void printSequenceOfLimit();
     private:
         LIMIT_TYPE limitType;
         string typeName;
+        string identifierName;
         vector<string> paramVect;
 
         void printRangeValuesLimit();
         void printStringFromLimit();
         void printStringSizeLimit();
         void printValueListLimit();
+        void printBooleanLimit();
         void printNumericStringLimit();
+
+        bool isIdentifierEmpty();
 };
 
 #endif

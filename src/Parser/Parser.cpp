@@ -295,19 +295,24 @@ unsigned int Parser::parseType()
     switch(currentToken.getType())
     {
         case ScannerTokenType::INTEGER_TAG:
+            rangeService.addCurrentLimitParam("\0");
             return parseIntegerType();
         case ScannerTokenType::BOOLEAN_TAG:
+            rangeService.addCurrentLimitParam("\0");
             currentToken = scan.getNextToken();
+            rangeService.addLimit(BOOLEAN_LIMIT);
             return 0;
         case ScannerTokenType::SEQUENCE_TAG:
         case ScannerTokenType::CHOICE_TAG:
             currentToken = scan.getNextToken();
             return parseSequenceOrChoiceType();
         case ScannerTokenType::ENUMERATED_TAG:
+            rangeService.addCurrentLimitParam("\0");
             return parseEnumaratedType();
         case ScannerTokenType::PRINTABLESTRING_TAG:
         case ScannerTokenType::NUMERICSTRING_TAG:
         case ScannerTokenType::IA5STRING_TAG:
+            rangeService.addCurrentLimitParam("\0");
             return parseStringType();
     }
     return 24;
@@ -372,6 +377,7 @@ unsigned int Parser::parseSequenceOrChoiceType()
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::IDENTIFIER_TAG))
             return 7;
+        rangeService.addCurrentLimitParam(currentToken.getContent());
         currentToken = scan.getNextToken();
         switch(currentToken.getType())
         {
@@ -382,10 +388,16 @@ unsigned int Parser::parseSequenceOrChoiceType()
                     currentToken = scan.getNextToken();
                     if(!isTypeForSeqOf())
                         return 12;
+                    if(currentToken.getType() != INTEGER_TAG)
+                    {
+                        rangeService.addCurrentLimitParam(currentToken.getContent());
+                        rangeService.addLimit(SEQUENCE_OF_LIMIT);
+                    }
                     currentToken = scan.getNextToken();
                 }
                 else
                 {
+                    rangeService.clearWithoutTypeName();
                     result = parseSequenceOrChoiceType();
                     if(result != 0)
                         return result;
@@ -393,6 +405,7 @@ unsigned int Parser::parseSequenceOrChoiceType()
                 break;
             case ScannerTokenType::CHOICE_TAG:
                 currentToken = scan.getNextToken();
+                rangeService.clearWithoutTypeName();
                 result = parseSequenceOrChoiceType();
                 if(result != 0)
                     return result;
@@ -409,6 +422,7 @@ unsigned int Parser::parseSequenceOrChoiceType()
                 break;
             case ScannerTokenType::BOOLEAN_TAG:
                 currentToken = scan.getNextToken();
+                rangeService.addLimit(BOOLEAN_LIMIT);
                 break;
             case ScannerTokenType::NUMERICSTRING_TAG:
             case ScannerTokenType::PRINTABLESTRING_TAG:
@@ -418,6 +432,8 @@ unsigned int Parser::parseSequenceOrChoiceType()
                     return result;
                 break;
             case ScannerTokenType::NAME_TAG:
+                rangeService.addCurrentLimitParam(currentToken.getContent());
+                rangeService.addLimit(MEMBER_LIMIT);
                 currentToken = scan.getNextToken();
                 break;
             default:
@@ -427,6 +443,7 @@ unsigned int Parser::parseSequenceOrChoiceType()
             break;
         else if(!isTokenType(ScannerTokenType::COMMA))
             return 5;
+        rangeService.clearWithoutTypeName();
     }
     currentToken = scan.getNextToken();
     return 0;
@@ -467,12 +484,19 @@ unsigned int Parser::parseEnumaratedType()
 
 unsigned int Parser::parseStringType()
 {
+    bool isNumericString = false;
+    if(isTokenType(ScannerTokenType::NUMERICSTRING_TAG))
+        isNumericString = true;
     rangeService.addCurrentLimitParam(currentToken.getContent());
     currentToken = scan.getNextToken();
     if(isTokenType(ScannerTokenType::IDENTIFIER_TAG) || isTokenType(ScannerTokenType::NAME_TAG)
         || isTokenType(ScannerTokenType::END_TAG) || isTokenType(ScannerTokenType::COMMA)
         || isTokenType(ScannerTokenType::RIGHT_CURLY_BRACKET))
+    {
+        if(isNumericString)
+            rangeService.addLimit(STRING_FROM_LIMIT);
         return 0;
+    }
     if(!isTokenType(ScannerTokenType::LEFT_ROUND_BRACKET))
         return 20;
     currentToken = scan.getNextToken();

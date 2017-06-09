@@ -17,6 +17,7 @@ class RangeService
         void addLimit(LIMIT_TYPE);
         void printLimits();
         void clear();
+        void clearWithoutTypeName();
     private:
         vector<RangeObject> limitsVector;
         vector<string> currentLimitParams;
