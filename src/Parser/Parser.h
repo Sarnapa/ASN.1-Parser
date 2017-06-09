@@ -6,6 +6,7 @@
 
 #include <list>
 #include "../Scanner/Scanner.h"
+#include "../RangeService/RangeService.h"
 #include "ErrorInfo.h"
 
 using namespace std;
@@ -21,6 +22,7 @@ class Parser
         Scanner &scan;
         ScannerToken currentToken;
         ErrorInfo errorInfo;
+        RangeService rangeService;
 
         unsigned int parseOneDefinition();
         unsigned int parseDefBeginning();
@@ -41,6 +43,7 @@ class Parser
         unsigned int parseStringType();
 
         unsigned int parseString();
+        unsigned int parseStringForFromLimit();
 
         inline bool isTokenType(ScannerTokenType type)
         {

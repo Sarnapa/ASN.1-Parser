@@ -4,7 +4,9 @@
 #include "Parser.h"
 
 Parser::Parser(Scanner &scan): scan(scan)
-{}
+{
+
+}
 
 Parser::~Parser()
 {
@@ -24,6 +26,8 @@ void Parser::parse()
         ++i;
         currentToken = scan.getNextToken();
     }
+
+    rangeService.printLimits();
 }
 
 unsigned int Parser::parseOneDefinition()
@@ -65,9 +69,11 @@ unsigned int Parser::parseOneDefinition()
                 break;
             case ScannerTokenType::NAME_TAG:
                 cout << currentToken.getContent() << endl;
+                rangeService.addCurrentLimitParam(currentToken.getContent());
                 result = parseType();
                 if(result != 0)
                     return errorInfo.getErrorInfo(result, currentToken, scan.getCurrentLine());
+                rangeService.clear();
                 cout << "OK" << endl;
                 break;
             case ScannerTokenType::EOF_CHAR:
@@ -319,15 +325,18 @@ unsigned int Parser::parseIntegerType()
     currentToken = scan.getNextToken();
     if(!isTokenType(ScannerTokenType::NUMBER))
         return 8;
+    rangeService.addCurrentLimitParam(currentToken.getContent());
     currentToken = scan.getNextToken();
     if(isTokenType(ScannerTokenType::DOTS))
     {
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::NUMBER))
             return 8;
+        rangeService.addCurrentLimitParam(currentToken.getContent());
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::RIGHT_ROUND_BRACKET))
             return 22;
+        rangeService.addLimit(RANGE_VALUES_INTEGER);
     }
     else if (isTokenType(ScannerTokenType::VERTICAL_LINE))
     {
@@ -336,9 +345,13 @@ unsigned int Parser::parseIntegerType()
             currentToken = scan.getNextToken();
             if(!isTokenType(ScannerTokenType::NUMBER))
                 return 8;
+            rangeService.addCurrentLimitParam(currentToken.getContent());
             currentToken = scan.getNextToken();
             if(isTokenType(ScannerTokenType::RIGHT_ROUND_BRACKET))
+            {
+                rangeService.addLimit(VALUES_LIST_INTEGER);
                 break;
+            }
             else if(!isTokenType(ScannerTokenType::VERTICAL_LINE))
                 return 23;
         }
@@ -429,6 +442,7 @@ unsigned int Parser::parseEnumaratedType()
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::IDENTIFIER_TAG))
             return 7;
+        rangeService.addCurrentLimitParam(currentToken.getContent());
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::LEFT_ROUND_BRACKET))
             return 20;
@@ -440,7 +454,10 @@ unsigned int Parser::parseEnumaratedType()
             return 22;
         currentToken = scan.getNextToken();
         if(isTokenType(ScannerTokenType::RIGHT_CURLY_BRACKET))
+        {
+            rangeService.addLimit(VALUES_LIST_ENUM);
             break;
+        }
         else if(!isTokenType(ScannerTokenType::COMMA))
             return 5;
     }
@@ -450,6 +467,7 @@ unsigned int Parser::parseEnumaratedType()
 
 unsigned int Parser::parseStringType()
 {
+    rangeService.addCurrentLimitParam(currentToken.getContent());
     currentToken = scan.getNextToken();
     if(isTokenType(ScannerTokenType::IDENTIFIER_TAG) || isTokenType(ScannerTokenType::NAME_TAG)
         || isTokenType(ScannerTokenType::END_TAG) || isTokenType(ScannerTokenType::COMMA)
@@ -466,18 +484,21 @@ unsigned int Parser::parseStringType()
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::NUMBER))
             return 8;
+        rangeService.addCurrentLimitParam(currentToken.getContent());
         currentToken = scan.getNextToken();
         if(isTokenType(ScannerTokenType::DOTS))
         {
             currentToken = scan.getNextToken();
             if(!isTokenType(ScannerTokenType::NUMBER))
                 return 8;
+            rangeService.addCurrentLimitParam(currentToken.getContent());
             currentToken = scan.getNextToken();
             if(!isTokenType(ScannerTokenType::RIGHT_ROUND_BRACKET))
                 return 22;
         }
         else if(!isTokenType(ScannerTokenType::RIGHT_ROUND_BRACKET))
             return 26;
+        rangeService.addLimit(STRING_SIZE_LIMIT);
     }
     else if(isTokenType(ScannerTokenType::FROM_TAG))
     {
@@ -487,12 +508,15 @@ unsigned int Parser::parseStringType()
         while(1)
         {
             currentToken = scan.getNextToken();
-            unsigned int result = parseString();
+            unsigned int result = parseStringForFromLimit();
             if(result != 0)
                 return result;
             currentToken = scan.getNextToken();
             if(isTokenType(ScannerTokenType::RIGHT_ROUND_BRACKET))
+            {
+                rangeService.addLimit(STRING_FROM_LIMIT);
                 break;
+            }
             else if (!isTokenType(ScannerTokenType::VERTICAL_LINE))
                 return 23;
         }
@@ -514,6 +538,23 @@ unsigned int Parser::parseString()
     {
         if(!isTokenType(ScannerTokenType::ASCII_STRING))
             return 19;
+        currentToken = scan.getNextToken();
+        if(!isTokenType(ScannerTokenType::QUOTES))
+            return 14;
+    }
+    return 0;
+}
+
+unsigned int Parser::parseStringForFromLimit()
+{
+    if(!isTokenType(ScannerTokenType::QUOTES))
+        return 14;
+    currentToken = scan.getNextToken();
+    if(!isTokenType(ScannerTokenType::QUOTES))
+    {
+        if(!isTokenType(ScannerTokenType::ASCII_STRING))
+            return 19;
+        rangeService.addCurrentLimitParam(currentToken.getContent());
         currentToken = scan.getNextToken();
         if(!isTokenType(ScannerTokenType::QUOTES))
             return 14;
